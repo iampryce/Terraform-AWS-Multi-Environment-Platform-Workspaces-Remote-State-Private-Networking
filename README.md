@@ -8,12 +8,12 @@
 
 ## Project Summary
 
-This project deploys isolated AWS infrastructure across three environments (dev, staging, prod) from a single codebase. The active Terraform workspace drives all environment-specific behaviour — no duplicated folders, no separate codebases.
+This project deploys isolated AWS infrastructure across three environments (dev, staging, prod) from a single codebase. The active Terraform workspace drives all environment-specific behaviour : no duplicated folders, no separate codebases.
 
 **Production practices applied:**
 - Private EC2 instances with no direct internet exposure
 - Outbound-only internet access via NAT Gateway
-- Dynamic AMI resolution — no hardcoded image IDs
+- Dynamic AMI resolution : no hardcoded image IDs
 - Remote state in S3 with native locking
 - Input validation on all variables
 - Consistent tagging across every resource
@@ -23,11 +23,11 @@ This project deploys isolated AWS infrastructure across three environments (dev,
 ## Key Skills Demonstrated
 
 - Terraform (Infrastructure as Code)
-- AWS Networking — VPC, Subnets, IGW, NAT Gateway, Route Tables
+- AWS Networking : VPC, Subnets, IGW, NAT Gateway, Route Tables
 - Multi-environment design using Terraform Workspaces
-- Remote state management — S3 backend with lockfile
-- Dynamic data sources — AMI lookup at plan time
-- Secure infrastructure design — private subnets, restricted SSH, security groups
+- Remote state management : S3 backend with lockfile
+- Dynamic data sources : AMI lookup at plan time
+- Secure infrastructure design : private subnets, restricted SSH, security groups
 - Input validation and environment-aware locals
 
 ---
@@ -83,10 +83,10 @@ backend.tf              S3 remote state with workspace namespacing
 variables.tf            All input variables with types and validation
 terraform.tfvars        Your actual values (gitignored)
 terraform.tfvars.example  Safe template to copy and fill in
-locals.tf               Environment logic — name prefix, instance size, tags
+locals.tf               Environment logic : name prefix, instance size, tags
 data.tf                 Dynamic AMI lookup (latest Amazon Linux 2)
 networking.tf           VPC, subnets, IGW, NAT Gateway, route tables
-security.tf             EC2 security group — SSH, VPC traffic, egress
+security.tf             EC2 security group : SSH, VPC traffic, egress
 compute.tf              EC2 instance in private subnet
 outputs.tf              VPC ID, instance ID, private IP, NAT public IP
 .gitignore              Blocks state files, .terraform/, terraform.tfvars
@@ -97,7 +97,7 @@ outputs.tf              VPC ID, instance ID, private IP, NAT public IP
 ## File Reference
 
 ### `provider.tf`
-Connects Terraform to AWS. Pins the provider to version 5.x to prevent breaking changes from automatic upgrades. Region is read from `var.region` — never hardcoded.
+Connects Terraform to AWS. Pins the provider to version 5.x to prevent breaking changes from automatic upgrades. Region is read from `var.region` : never hardcoded.
 
 Credentials are not stored here. Terraform reads them from `~/.aws/credentials`, environment variables, or an IAM role automatically.
 
@@ -115,7 +115,7 @@ s3://multi-env-platform-terraform-state/
 
 `use_lockfile = true` prevents two applies from running at the same time and corrupting state.
 
-> The S3 bucket must be created manually before `terraform init` — Terraform cannot create its own backend.
+> The S3 bucket must be created manually before `terraform init` : Terraform cannot create its own backend.
 
 ---
 
@@ -126,7 +126,7 @@ Defines every input the project accepts. All variables have types and descriptio
 |---|---|---|
 | `region` | `us-east-1` | AWS region for all resources |
 | `project_name` | required | Prefix on every resource name |
-| `owner` | `""` | Responsible team — applied as a tag |
+| `owner` | `""` | Responsible team : applied as a tag |
 | `additional_tags` | `{}` | Extra tags merged into every resource |
 | `vpc_cidr` | `10.0.0.0/16` | VPC IP range |
 | `public_subnet_cidr` | `10.0.1.0/24` | Public subnet IP range |
@@ -173,9 +173,9 @@ Builds the full network topology in dependency order.
 
 | Resource | Purpose |
 |---|---|
-| `aws_vpc` | Isolated private network — everything lives here |
-| `aws_subnet public` | Internet-facing tier — NAT Gateway lives here |
-| `aws_subnet private` | Secure tier — EC2 lives here, no public IP |
+| `aws_vpc` | Isolated private network : everything lives here |
+| `aws_subnet public` | Internet-facing tier : NAT Gateway lives here |
+| `aws_subnet private` | Secure tier : EC2 lives here, no public IP |
 | `aws_internet_gateway` | Connects public subnet to the internet |
 | `aws_eip` | Static public IP for the NAT Gateway |
 | `aws_nat_gateway` | Outbound-only internet for private instances |
@@ -185,7 +185,7 @@ Builds the full network topology in dependency order.
 ---
 
 ### `security.tf`
-A stateful firewall attached to the EC2 instance. Stateful means response traffic is automatically allowed — no matching egress rule needed per ingress rule.
+A stateful firewall attached to the EC2 instance. Stateful means response traffic is automatically allowed : no matching egress rule needed per ingress rule.
 
 | Rule | Port | Source | Purpose |
 |---|---|---|---|
@@ -198,11 +198,11 @@ A stateful firewall attached to the EC2 instance. Stateful means response traffi
 ### `compute.tf`
 Deploys the EC2 app server into the private subnet.
 
-- AMI resolved dynamically from `data.tf` — always current, always region-correct
-- Instance size from `local.instance_type` — changes with the workspace
-- No public IP — sits in private subnet
-- `key_name = null` by default — use SSM Session Manager for access
-- `gp3` volume — faster and cheaper than gp2, deleted on destroy
+- AMI resolved dynamically from `data.tf` : always current, always region-correct
+- Instance size from `local.instance_type` : changes with the workspace
+- No public IP : sits in private subnet
+- `key_name = null` by default : use SSM Session Manager for access
+- `gp3` volume : faster and cheaper than gp2, deleted on destroy
 
 ---
 
@@ -278,16 +278,16 @@ terraform destroy            # destroy the active environment
 
 ## Design Principles
 
-**Variables over hardcoding** — every value that could change is an input variable. Nothing is hardcoded in resource files.
+**Variables over hardcoding** : every value that could change is an input variable. Nothing is hardcoded in resource files.
 
-**Locals for logic** — `locals.tf` is the single place that translates workspace name into environment behaviour. Resource files stay declarative.
+**Locals for logic** : `locals.tf` is the single place that translates workspace name into environment behaviour. Resource files stay declarative.
 
-**Remote state** — state lives in S3. Multiple people can work safely. The lockfile prevents concurrent corruption.
+**Remote state** : state lives in S3. Multiple people can work safely. The lockfile prevents concurrent corruption.
 
-**Private by default** — EC2 has no public IP. The only public IP in the project belongs to the NAT Gateway, used for outbound traffic only.
+**Private by default** : EC2 has no public IP. The only public IP in the project belongs to the NAT Gateway, used for outbound traffic only.
 
-**Dynamic over static** — the AMI is resolved at plan time, not hardcoded. The project stays current without manual updates.
+**Dynamic over static** : the AMI is resolved at plan time, not hardcoded. The project stays current without manual updates.
 
-**Validation at the boundary** — bad inputs are rejected before Terraform contacts AWS.
+**Validation at the boundary** : bad inputs are rejected before Terraform contacts AWS.
 
-**Tags on everything** — `local.common_tags` is merged into every resource for cost tracking, compliance, and environment filtering in the AWS console.
+**Tags on everything** : `local.common_tags` is merged into every resource for cost tracking, compliance, and environment filtering in the AWS console.
