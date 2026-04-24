@@ -17,7 +17,9 @@
 
 Designed and implemented a production-style AWS infrastructure using Terraform with environment isolation, secure networking, and scalable configuration.
 
+## DEMO 
 
+https://www.loom.com/share/bab62cb0d0e34705aae923f263daa4c6
 
 
 ## Project Summary
@@ -226,6 +228,11 @@ Values printed after `terraform apply` and stored in state.
 
 ## How to Use
 
+### Configure your CLI credential for Authentication
+<img width="1107" height="249" alt="configured credentials" src="https://github.com/user-attachments/assets/73283de5-a348-443e-bcf5-306767f530d3" />
+
+
+
 ### One-time setup
 
 Create the S3 state bucket:
@@ -245,12 +252,18 @@ Initialise Terraform:
 terraform init
 ```
 
+<img width="1102" height="483" alt="backend and statelock setup" src="https://github.com/user-attachments/assets/e91aaf27-77e5-4459-9281-193cc3e8c6aa" />
+
+
 Create workspaces:
 ```bash
 terraform workspace new dev
 terraform workspace new staging
 terraform workspace new prod
 ```
+
+<img width="1084" height="448" alt="created workspaces" src="https://github.com/user-attachments/assets/1d46e5ee-b8b8-4c6a-b21d-3fa7802aa5c4" />
+
 
 ### Deploy
 
