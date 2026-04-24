@@ -5,18 +5,32 @@
 region       = "us-east-1"
 project_name = "your-project-name"
 
+# ─── Ownership & Tagging ──────────────────────────────────────────────────────
+owner = "your-name-or-team"
+
+# Optional: extra tags applied to every resource
+# additional_tags = {
+#   CostCentre = "engineering"
+#   Compliance = "pci"
+# }
+
 # ─── Networking ───────────────────────────────────────────────────────────────
 vpc_cidr            = "10.0.0.0/16"
 public_subnet_cidr  = "10.0.1.0/24"
 private_subnet_cidr = "10.0.2.0/24"
 
 # ─── Security ─────────────────────────────────────────────────────────────────
-# Replace with your actual IP to restrict SSH access: "x.x.x.x/32"
-# Never leave this as 0.0.0.0/0 in a real deployment
+# Replace with your actual IP: "x.x.x.x/32"
+# Never leave as 0.0.0.0/0 in a real deployment
 allowed_ssh_cidr = "YOUR_IP/32"
 
+# Optional: name of an existing EC2 key pair for SSH access
+# Leave commented out to use AWS SSM Session Manager instead (recommended)
+# ssh_key_name = "your-key-pair-name"
+
 # ─── Compute (optional overrides) ─────────────────────────────────────────────
-# Uncomment to override the default instance sizes per environment
+# AMI is resolved automatically via data source — no need to set ami_id
+# Uncomment to override default instance sizes per environment
 # instance_type_map = {
 #   dev     = "t2.micro"
 #   staging = "t2.small"

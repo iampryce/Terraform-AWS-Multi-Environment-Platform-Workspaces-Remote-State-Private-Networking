@@ -1,5 +1,3 @@
-# ─── VPC ─────────────────────────────────────────────────────────────────────
-
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -8,14 +6,13 @@ resource "aws_vpc" "main" {
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-vpc" })
 }
 
-# ─── Subnets ──────────────────────────────────────────────────────────────────
+# ── Subnets ───────────────────────────────────────────────────────────────────
 
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidr
   availability_zone       = "${var.region}a"
-  # Instances launched here get a public IP automatically
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = true # instances here get a public IP
 
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-public-subnet" })
 }
@@ -24,42 +21,42 @@ resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.private_subnet_cidr
   availability_zone = "${var.region}a"
-  # No public IP — this is the secure subnet for EC2
+  # map_public_ip_on_launch defaults to false — no public IP assigned
 
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-private-subnet" })
 }
 
-# ─── Internet Gateway (public subnet → internet) ──────────────────────────────
+# ── Internet Gateway ──────────────────────────────────────────────────────────
 
+# Without this, even the public subnet has no internet access
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-igw" })
 }
 
-# ─── Elastic IP for NAT Gateway ───────────────────────────────────────────────
+# ── NAT Gateway ───────────────────────────────────────────────────────────────
 
+# Static public IP for the NAT Gateway — all private instance traffic exits via this IP
 resource "aws_eip" "nat" {
   domain = "vpc"
 
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-nat-eip" })
 }
 
-# ─── NAT Gateway (private subnet → internet, one-way) ────────────────────────
-
+# Allows private instances to reach the internet — blocks all inbound traffic
 resource "aws_nat_gateway" "nat" {
-  # NAT lives in the PUBLIC subnet — it needs internet access to forward traffic
-  subnet_id     = aws_subnet.public.id
+  subnet_id     = aws_subnet.public.id # NAT must sit in the public subnet
   allocation_id = aws_eip.nat.id
 
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-nat" })
 
-  depends_on = [aws_internet_gateway.igw]
+  depends_on = [aws_internet_gateway.igw] # IGW must exist before NAT can route
 }
 
-# ─── Route Tables ─────────────────────────────────────────────────────────────
+# ── Route Tables ──────────────────────────────────────────────────────────────
 
-# Public route table: all traffic not in VPC goes out through IGW
+# Public: non-VPC traffic goes out through the IGW
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -71,13 +68,12 @@ resource "aws_route_table" "public" {
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-public-rt" })
 }
 
-# Associate the public route table with the public subnet
 resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
 
-# Private route table: traffic exits through NAT (not directly to internet)
+# Private: non-VPC traffic goes through NAT instead of directly to the internet
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
@@ -89,7 +85,6 @@ resource "aws_route_table" "private" {
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-private-rt" })
 }
 
-# Associate the private route table with the private subnet
 resource "aws_route_table_association" "private" {
   subnet_id      = aws_subnet.private.id
   route_table_id = aws_route_table.private.id
