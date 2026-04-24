@@ -25,3 +25,6 @@ override.tf.json
 
 # Plan output files — contain sensitive resource details
 *.tfplan
+
+terraform.tfvars
+terraform.tfvars.json

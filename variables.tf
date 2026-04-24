@@ -24,7 +24,7 @@ variable "project_name" {
 variable "owner" {
   description = "Team or person responsible — applied as a tag"
   type        = string
-  default     = ""
+  default     = " "
 }
 
 variable "additional_tags" {
