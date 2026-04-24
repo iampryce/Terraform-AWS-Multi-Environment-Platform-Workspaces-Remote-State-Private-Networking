@@ -30,7 +30,15 @@ This project deploys isolated AWS infrastructure across three environments (dev,
 
 ---
 
+## Problem This Solves
+
+Managing multiple environments often leads to duplicated code, inconsistent configurations, and state conflicts. This project solves that by using Terraform Workspaces to isolate environments while maintaining a single, reusable codebase.
+
+---
+
 ## Architecture
+
+This architecture follows a secure, production-style network design with isolated private workloads and controlled outbound internet access.
 
 ```
 Internet
@@ -69,7 +77,7 @@ Security Group
 | Resource names | `*-dev-*` | `*-staging-*` | `*-prod-*` |
 | State file | isolated | isolated | isolated |
 
-Everything else is identical. The workspace is the only lever.
+All environments share identical infrastructure definitions. The active workspace is the only variable controlling behaviour.
 
 ---
 
@@ -289,3 +297,11 @@ terraform destroy            # destroy the active environment
 **Validation at the boundary** : bad inputs are rejected before Terraform contacts AWS.
 
 **Tags on everything** : `local.common_tags` is merged into every resource for cost tracking, compliance, and environment filtering in the AWS console.
+
+---
+
+## Trade-offs
+
+- Terraform Workspaces simplify environment management but can become harder to manage at scale compared to separate environment directories. For larger teams, a directory-per-environment structure may offer clearer separation.
+- S3 native locking (`use_lockfile`) was used for simplicity. DynamoDB locking is an alternative that provides stronger consistency guarantees in larger team environments.
+- A single availability zone is used per subnet. A production system would span multiple AZs for high availability.
