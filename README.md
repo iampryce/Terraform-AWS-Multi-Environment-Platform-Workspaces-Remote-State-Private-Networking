@@ -1,8 +1,6 @@
 # Terraform Multi-Environment Workspaces
 
-> Designed and implemented a production-style AWS infrastructure using Terraform with environment isolation, secure networking, and scalable configuration.
-
-**Repository:** [github.com/iampryce/Terraform-AWS-Multi-Environment-Platform-Workspaces-Remote-State-Private-Networking](https://github.com/iampryce/Terraform-AWS-Multi-Environment-Platform-Workspaces-Remote-State-Private-Networking)
+Designed and implemented a production-style AWS infrastructure using Terraform with environment isolation, secure networking, and scalable configuration.
 
 ---
 
