@@ -56,25 +56,8 @@ Managing multiple environments often leads to duplicated code, inconsistent conf
 
 This architecture follows a secure, production-style network design with isolated private workloads and controlled outbound internet access.
 
-```
-Internet
-   │
-   ▼
-Internet Gateway
-   │
-   ▼
-Public Subnet (10.0.1.0/24)
-   │         │
-   │         ▼
-   │     NAT Gateway ── Elastic IP
-   │
-   ▼
-Private Subnet (10.0.2.0/24)
-   │
-   ▼
-EC2 Instance
-   │
-Security Group
+<img width="12448" height="5600" alt="Multi-Environment-Terraform (1)" src="https://github.com/user-attachments/assets/67066615-4120-4afb-aaee-525b0ad9091a" />
+
 ```
 
 **Traffic rules:**
