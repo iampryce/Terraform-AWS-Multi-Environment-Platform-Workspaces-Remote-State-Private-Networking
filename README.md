@@ -242,6 +242,9 @@ aws s3api create-bucket \
   --region us-east-1
 ```
 
+<img width="1349" height="606" alt="image" src="https://github.com/user-attachments/assets/6411e937-0a72-47fc-9a2e-8618b64f3628" />
+
+
 Copy and fill in your variables:
 ```bash
 cp terraform.tfvars.example terraform.tfvars
