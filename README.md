@@ -1,8 +1,24 @@
-# Multi-Environment AWS Infrastructure using Terraform Workspaces
+
+
+
+
+
+
+
+<p align="center">
+<img width="290" height="120" alt="image" src="https://github.com/user-attachments/assets/006ebd2f-1e5f-4025-a384-ba4371d15ef9" />
+
+    
+</p>
+
+<h1 align="center"> Multi-Environment AWS Infrastructure using Terraform Workspaces
+</h1>
+
 
 Designed and implemented a production-style AWS infrastructure using Terraform with environment isolation, secure networking, and scalable configuration.
 
----
+
+
 
 ## Project Summary
 
