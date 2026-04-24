@@ -1,4 +1,4 @@
-# Terraform Multi-Environment Workspaces
+# Multi-Environment AWS Infrastructure using Terraform Workspaces
 
 Designed and implemented a production-style AWS infrastructure using Terraform with environment isolation, secure networking, and scalable configuration.
 
