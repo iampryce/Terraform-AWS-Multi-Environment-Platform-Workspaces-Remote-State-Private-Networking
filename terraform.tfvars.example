@@ -1,0 +1,24 @@
+# Copy this file to terraform.tfvars and fill in your values:
+#   cp terraform.tfvars.example terraform.tfvars
+
+# ─── Core ─────────────────────────────────────────────────────────────────────
+region       = "us-east-1"
+project_name = "your-project-name"
+
+# ─── Networking ───────────────────────────────────────────────────────────────
+vpc_cidr            = "10.0.0.0/16"
+public_subnet_cidr  = "10.0.1.0/24"
+private_subnet_cidr = "10.0.2.0/24"
+
+# ─── Security ─────────────────────────────────────────────────────────────────
+# Replace with your actual IP to restrict SSH access: "x.x.x.x/32"
+# Never leave this as 0.0.0.0/0 in a real deployment
+allowed_ssh_cidr = "YOUR_IP/32"
+
+# ─── Compute (optional overrides) ─────────────────────────────────────────────
+# Uncomment to override the default instance sizes per environment
+# instance_type_map = {
+#   dev     = "t2.micro"
+#   staging = "t2.small"
+#   prod    = "t3.medium"
+# }

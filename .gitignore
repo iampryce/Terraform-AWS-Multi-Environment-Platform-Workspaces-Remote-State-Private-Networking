@@ -1,0 +1,27 @@
+# Local state files — never commit these
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# State lock file
+.terraform.lock.hcl
+
+# Terraform working directory — downloaded providers and modules
+.terraform/
+
+# Actual variable values — may contain sensitive data
+terraform.tfvars
+*.auto.tfvars
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Override files — local developer overrides, not for sharing
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Plan output files — contain sensitive resource details
+*.tfplan
